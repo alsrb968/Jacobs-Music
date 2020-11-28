@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_enabled="false" android:drawable="@drawable/me_ic_random_a_dis"/>
+    <item android:state_pressed="true" android:drawable="@drawable/me_ic_random_a_push"/>
+    <item android:state_focused="true" android:drawable="@drawable/me_ic_random_a_focus"/>
+    <item android:drawable="@drawable/me_ic_random_a_nor"/>
+</selector>

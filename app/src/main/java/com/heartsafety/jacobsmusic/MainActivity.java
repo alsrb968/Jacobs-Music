@@ -5,51 +5,42 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.databinding.DataBindingUtil;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.heartsafety.jacobsmusic.databinding.ActivityMainBinding;
+import com.heartsafety.util.Log;
+
 import java.util.ArrayList;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
-    private static final String TAG = "MainActivity";
 
-    private ListView listView;
+    private ActivityMainBinding mBinding;
     public static ArrayList<MusicDto> list;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         checkPermission();
         getMusicList(); // 디바이스 안에 있는 mp3 파일 리스트를 조회하여 List를 만듭니다.
-        listView = (ListView)findViewById(R.id.listview);
-        MusicAdapter adapter = new MusicAdapter(this, list);
-        listView.setAdapter(adapter);
 
-
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(MainActivity.this, MusicActivity.class);
-                intent.putExtra("position",position);
-                intent.putExtra("playlist",list);
-                startActivity(intent);
-            }
-        });
+        MusicRecyclerAdapter recyclerAdapter = new MusicRecyclerAdapter(this, list);
+        mBinding.recyclerView.setAdapter(recyclerAdapter);
     }
 
 
-    public  void getMusicList(){
+    public void getMusicList(){
         list = new ArrayList<>();
         //가져오고 싶은 컬럼 명을 나열합니다. 음악의 아이디, 앰블럼 아이디, 제목, 아스티스트 정보를 가져옵니다.
         String[] projection = {
@@ -68,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
             musicDto.setAlbumId(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID)));
             musicDto.setTitle(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE)));
             musicDto.setArtist(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST)));
-            Log.d(TAG, musicDto.toString());
+            Log.d(musicDto.toString());
             list.add(musicDto);
         }
         cursor.close();
@@ -109,9 +100,7 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == 0) {
             for (int grantResult : grantResults) {
                 //허용됬다면
-                if (grantResult == PackageManager.PERMISSION_GRANTED) {
-
-                } else {
+                if (grantResult != PackageManager.PERMISSION_GRANTED) {
                     Toast.makeText(getApplicationContext(), "앱권한설정하세요", Toast.LENGTH_LONG).show();
                     finish();
                 }
