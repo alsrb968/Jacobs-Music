@@ -1,4 +1,4 @@
-package com.heartsafety.util;
+package com.heartsafety.jacobsmusic.util;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -9,8 +9,18 @@ import android.os.ParcelFileDescriptor;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Locale;
 
 public class MusicUtils {
+    public static class Page {
+        public static final int LIST = 0;
+        public static final int PLAYER = 1;
+    }
+
+    public static class PlayState {
+        public static final int PLAY = 0;
+        public static final int PAUSE = 1;
+    }
 
     public static Bitmap getAlbumImage(Context context, String album_id) {
         BitmapFactory.Options options = new BitmapFactory.Options();
@@ -38,5 +48,22 @@ public class MusicUtils {
             }
         }
         return null;
+    }
+
+    public static String getTimeString(int millis) {
+        StringBuilder buf = new StringBuilder();
+
+        int hours = millis / (1000 * 60 * 60);
+        int minutes = (millis % (1000 * 60 * 60)) / (1000 * 60);
+        int seconds = ((millis % (1000 * 60 * 60)) % (1000 * 60)) / 1000;
+
+        if (hours > 0) {
+            buf.append(String.format(Locale.KOREA, "%d", hours)).append(":");
+        }
+        buf.append(String.format(Locale.KOREA, "%d", minutes))
+                .append(":")
+                .append(String.format(Locale.KOREA, "%02d", seconds));
+
+        return buf.toString();
     }
 }

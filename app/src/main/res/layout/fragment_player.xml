@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="android.view.View"/>
+        <import type="com.heartsafety.jacobsmusic.util.MusicUtils"/>
+
+        <variable
+            name="onClickHandler"
+            type="com.heartsafety.jacobsmusic.activity.fragment.PlayerFragment.OnClickHandler" />
+
+        <variable
+            name="onSeekBarHandler"
+            type="com.heartsafety.jacobsmusic.activity.fragment.PlayerFragment.OnSeekBarHandler" />
+
+        <variable
+            name="playState"
+            type="Integer" />
+
+        <variable
+            name="playTime"
+            type="Integer" />
+
+        <variable
+            name="totalTime"
+            type="Integer" />
+
+        <variable
+            name="musicDto"
+            type="com.heartsafety.jacobsmusic.activity.model.MusicDto" />
+
+    </data>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/black">
+
+        <ImageView
+            android:id="@+id/bg_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"/>
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <Button
+                    android:id="@+id/back_btn"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="30dp"
+                    android:layout_gravity="start|center_vertical"
+                    android:background="@drawable/back"
+                    android:onClick="@{onClickHandler}" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:fontFamily="@font/notosanskr_regular"
+                    android:includeFontPadding="false"
+                    android:text="@string/now_playing"
+                    android:textColor="@color/ash"
+                    android:textSize="20sp" />
+
+            </FrameLayout>
+
+
+            <ImageView
+                android:id="@+id/album"
+                android:layout_width="720px"
+                android:layout_height="720px"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="176dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.497"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:layout_marginHorizontal="10dp"
+                android:ellipsize="marquee"
+                android:fontFamily="@font/notosanskr_medium"
+                android:gravity="center"
+                android:singleLine="true"
+                android:includeFontPadding="false"
+                android:text="@{musicDto.title}"
+                android:textColor="@color/ash"
+                android:textSize="30sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/album" />
+
+            <TextView
+                android:id="@+id/artist"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/notosanskr_light"
+                android:gravity="center"
+                android:singleLine="true"
+                android:includeFontPadding="false"
+                android:text="@{musicDto.artist}"
+                android:textColor="@color/ash"
+                android:textSize="20sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/title" />
+
+            <LinearLayout
+                android:id="@+id/linearLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center"
+                android:layout_marginTop="30dp"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/artist">
+
+                <ImageView
+                    android:id="@+id/pre"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_margin="10dp"
+                    android:onClick="@{onClickHandler}"
+                    android:src="@drawable/me_ic_pre" />
+
+                <ImageView
+                    android:id="@+id/play"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_margin="10dp"
+                    android:onClick="@{onClickHandler}"
+                    android:src="@drawable/me_ic_play"
+                    android:visibility="@{playState == MusicUtils.PlayState.PLAY ? View.GONE : View.VISIBLE}"/>
+
+                <ImageView
+                    android:id="@+id/pause"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_margin="10dp"
+                    android:onClick="@{onClickHandler}"
+                    android:src="@drawable/me_ic_pause"
+                    android:visibility="@{playState == MusicUtils.PlayState.PAUSE ? View.GONE : View.VISIBLE}"/>
+
+
+                <ImageView
+                    android:id="@+id/next"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_margin="10dp"
+                    android:onClick="@{onClickHandler}"
+                    android:src="@drawable/me_ic_forward" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/play_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/notosanskr_light"
+                android:gravity="start"
+                android:includeFontPadding="false"
+                android:singleLine="true"
+                android:text="@{MusicUtils.getTimeString(playTime)}"
+                android:textColor="@color/ash"
+                android:textSize="15sp"
+                android:layout_marginStart="10dp"
+                app:layout_constraintBottom_toTopOf="@id/seekbar"
+                app:layout_constraintStart_toStartOf="@id/seekbar" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/notosanskr_light"
+                android:gravity="start"
+                android:includeFontPadding="false"
+                android:singleLine="true"
+                android:text="@{MusicUtils.getTimeString(totalTime)}"
+                android:textColor="@color/ash"
+                android:textSize="15sp"
+                android:layout_marginEnd="10dp"
+                app:layout_constraintBottom_toTopOf="@id/seekbar"
+                app:layout_constraintEnd_toEndOf="@id/seekbar" />
+
+            <SeekBar
+                android:id="@+id/seekbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginHorizontal="20dp"
+                android:progressDrawable="@drawable/seekbar_progress"
+                android:setOnSeekBarChangeListener="@{onSeekBarHandler}"
+                android:max="@{totalTime}"
+                android:progress="@{playTime}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+
+        </android.support.constraint.ConstraintLayout>
+
+    </FrameLayout>
+</layout>

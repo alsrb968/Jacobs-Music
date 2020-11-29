@@ -1,4 +1,4 @@
-package com.heartsafety.jacobsmusic;
+package com.heartsafety.jacobsmusic.activity.model;
 
 import java.io.Serializable;
 

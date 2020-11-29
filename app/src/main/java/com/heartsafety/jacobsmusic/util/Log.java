@@ -1,4 +1,4 @@
-package com.heartsafety.util;
+package com.heartsafety.jacobsmusic.util;
 
 public class Log {
     private static final String TAG = "Jacobs_Music";

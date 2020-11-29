@@ -1,4 +1,4 @@
-package com.heartsafety.jacobsmusic;
+package com.heartsafety.jacobsmusic.activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -6,12 +6,15 @@ import android.databinding.DataBindingUtil;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import com.bumptech.glide.Glide;
+import com.heartsafety.jacobsmusic.R;
+import com.heartsafety.jacobsmusic.activity.model.MusicDto;
 import com.heartsafety.jacobsmusic.databinding.RowMusicListBinding;
-import com.heartsafety.util.Log;
-import com.heartsafety.util.MusicUtils;
+import com.heartsafety.jacobsmusic.util.Log;
+import com.heartsafety.jacobsmusic.util.MusicUtils;
 
 import java.util.ArrayList;
 
@@ -50,17 +53,18 @@ public class MusicRecyclerAdapter extends RecyclerView.Adapter<MusicRecyclerAdap
 
     @Override
     public void onBindViewHolder(@NonNull MusicViewHolder holder, int position) {
-        Log.d("position: " + position);
+//        Log.d("position: " + position);
         holder.binding.title.setText(mDataSet.get(position).getTitle());
         holder.binding.artist.setText(mDataSet.get(position).getArtist());
         Glide.with(mContext)
                 .load(MusicUtils.getAlbumImage(mContext, mDataSet.get(position).getAlbumId()))
                 .placeholder(R.drawable.me_bg_default_focus)
                 .into(holder.binding.album);
-        holder.binding.getRoot().setOnClickListener(v ->
-                mContext.startActivity(new Intent(mContext, MusicActivity.class)
-                        .putExtra("position", position)
-                        .putExtra("playlist", mDataSet)));
+
+        holder.binding.getRoot().setOnClickListener(v -> {
+            ((MusicActivity) mContext).switchFragment(MusicUtils.Page.PLAYER, holder.getAdapterPosition());
+        });
+
     }
 
     @Override
