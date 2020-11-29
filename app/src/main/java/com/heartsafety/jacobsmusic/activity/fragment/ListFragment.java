@@ -27,6 +27,7 @@ public class ListFragment extends BaseFragment {
     private FragmentListBinding mBinding;
     private ArrayList<MusicDto> mList;
 
+    private MusicRecyclerAdapter mMusicAdapter;
     private int mPosition;
 
     public ListFragment() {
@@ -70,10 +71,11 @@ public class ListFragment extends BaseFragment {
 //            for (MusicDto musicDto : mList) {
 //                Log.d(musicDto.getTitle());
 //            }
-            MusicRecyclerAdapter adapter = new MusicRecyclerAdapter(getContext(), list);
-            mBinding.recyclerView.setAdapter(adapter);
+            mMusicAdapter = new MusicRecyclerAdapter(getContext(), list);
+            mBinding.recyclerView.setAdapter(mMusicAdapter);
             mList = list;
         }
+
         mBinding.recyclerView.scrollToPosition(mPosition);
     }
 
@@ -86,7 +88,7 @@ public class ListFragment extends BaseFragment {
     @Override
     public void onBackPressed() {
         Log.i("");
-        mActivity.finish();
+        mActivity.moveTaskToBack(true);
     }
 
     @Override
@@ -105,10 +107,15 @@ public class ListFragment extends BaseFragment {
     }
 
     @Override
+    public void onPosition(int position) {
+        mMusicAdapter.setSelectedPosition(position);
+    }
+
+    @Override
     public void onMusicListInfo(ArrayList<MusicDto> list) {
         mList = list;
-        MusicRecyclerAdapter adapter = new MusicRecyclerAdapter(getContext(), mList);
-        mBinding.recyclerView.setAdapter(adapter);
+        mMusicAdapter = new MusicRecyclerAdapter(getContext(), mList);
+        mBinding.recyclerView.setAdapter(mMusicAdapter);
     }
 
     @Override

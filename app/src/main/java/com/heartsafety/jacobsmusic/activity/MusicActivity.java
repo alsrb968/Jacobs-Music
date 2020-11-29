@@ -31,6 +31,8 @@ import java.util.ArrayList;
 public class MusicActivity extends AppCompatActivity implements MusicInterface, MusicCallbackInterface {
     private ActivityMusicBinding mBinding;
     private ArrayList<MusicDto> mList;
+    private MusicDto mMusicDto;
+    private int mTotalTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -146,6 +148,14 @@ public class MusicActivity extends AppCompatActivity implements MusicInterface, 
         return mList;
     }
 
+    public MusicDto getMusicCurrentInfo() {
+        return mMusicDto;
+    }
+
+    public int getTotalTime() {
+        return mTotalTime;
+    }
+
     @Override
     public void start(int position) {
         getService().start(position);
@@ -177,6 +187,16 @@ public class MusicActivity extends AppCompatActivity implements MusicInterface, 
     }
 
     @Override
+    public int getPosition() {
+        return getService().getPosition();
+    }
+
+    @Override
+    public boolean isPlaying() {
+        return getService().isPlaying();
+    }
+
+    @Override
     public void onPlayState(int state) {
         mFragment.onPlayState(state);
     }
@@ -188,7 +208,13 @@ public class MusicActivity extends AppCompatActivity implements MusicInterface, 
 
     @Override
     public void onTotalTime(int time) {
+        mTotalTime = time;
         mFragment.onTotalTime(time);
+    }
+
+    @Override
+    public void onPosition(int position) {
+        mFragment.onPosition(position);
     }
 
     @Override
@@ -199,6 +225,7 @@ public class MusicActivity extends AppCompatActivity implements MusicInterface, 
 
     @Override
     public void onMusicCurrentInfo(MusicDto info) {
+        mMusicDto = info;
         mFragment.onMusicCurrentInfo(info);
     }
 }

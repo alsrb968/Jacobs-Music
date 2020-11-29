@@ -69,7 +69,13 @@ public class PlayerFragment extends BaseFragment {
         mBinding.setOnClickHandler(new OnClickHandler());
         mBinding.setOnSeekBarHandler(new OnSeekBarHandler());
 
-        start(mPosition);
+        int position = mActivity.getPosition();
+        if (position == mPosition) {
+            onMusicCurrentInfo(mActivity.getMusicCurrentInfo());
+            onTotalTime(mActivity.getTotalTime());
+        } else {
+            start(mPosition);
+        }
         Log.i("");
         return mBinding.getRoot();
     }
@@ -151,6 +157,11 @@ public class PlayerFragment extends BaseFragment {
     }
 
     @Override
+    public void onPosition(int position) {
+
+    }
+
+    @Override
     public void onMusicListInfo(ArrayList<MusicDto> list) {
 
     }
@@ -170,7 +181,6 @@ public class PlayerFragment extends BaseFragment {
                 .into(mBinding.album);
         Glide.with(this)
                 .load(bitmap)
-                .placeholder(R.drawable.me_bg_default_nor)
                 .apply(RequestOptions.bitmapTransform(new BlurTransformation(25, 2)))
                 .into(new CustomTarget<Drawable>() {
                     @Override
@@ -181,7 +191,7 @@ public class PlayerFragment extends BaseFragment {
 
                     @Override
                     public void onLoadCleared(@Nullable Drawable placeholder) {
-                        mBinding.bgImage.setBackground(mActivity.getDrawable(R.drawable.me_bg_play_default));
+                        mBinding.bgImage.setBackground(mActivity.getDrawable(R.drawable.co_bg));
                     }
                 });
     }

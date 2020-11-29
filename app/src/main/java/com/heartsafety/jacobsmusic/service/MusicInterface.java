@@ -7,4 +7,6 @@ public interface MusicInterface {
     void prev();
     void next();
     void seekTo(int ms);
+    int getPosition();
+    boolean isPlaying();
 }

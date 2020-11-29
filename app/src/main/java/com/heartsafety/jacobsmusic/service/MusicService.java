@@ -4,6 +4,9 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.media.AudioAttributes;
+import android.media.AudioFocusRequest;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Binder;
@@ -26,6 +29,7 @@ public class MusicService extends Service implements MusicInterface, MusicCallba
 
     public static ArrayList<MusicDto> mList;
 
+    private AudioManager mAudioManager;
     private MediaPlayer mMediaPlayer;
 
     private int mPosition = 0;
@@ -39,6 +43,13 @@ public class MusicService extends Service implements MusicInterface, MusicCallba
         }
     }
 
+    private MusicActivity getActivity() {
+        if (mActivity == null) {
+            Log.w("Activity is null!");
+        }
+        return mActivity;
+    }
+
     @Override
     public IBinder onBind(Intent intent) {
         return mBinder;
@@ -48,6 +59,8 @@ public class MusicService extends Service implements MusicInterface, MusicCallba
     public void onCreate() {
         super.onCreate();
         getMusicList();
+
+        mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 
         mMediaPlayer = new MediaPlayer();
         mMediaPlayer.setOnCompletionListener(mp -> {
@@ -128,12 +141,35 @@ public class MusicService extends Service implements MusicInterface, MusicCallba
         }
     }
 
-    private MusicActivity getActivity() {
-        if (mActivity == null) {
-            Log.w("Activity is null!");
-        }
-        return mActivity;
+    private void requestAudioFocus() {
+        AudioAttributes playbackAttributes = new AudioAttributes.Builder()
+                .setUsage(AudioAttributes.USAGE_GAME)
+                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                .build();
+        AudioFocusRequest focusRequest = new AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
+                .setAudioAttributes(playbackAttributes)
+                .setAcceptsDelayedFocusGain(true)
+                .setOnAudioFocusChangeListener(mOnAudioFocusChangeListener)
+                .build();
+        mAudioManager.requestAudioFocus(focusRequest);
     }
+
+    private AudioManager.OnAudioFocusChangeListener mOnAudioFocusChangeListener = focusChange -> {
+        switch (focusChange) {
+            case AudioManager.AUDIOFOCUS_GAIN:
+                play();
+                break;
+            case AudioManager.AUDIOFOCUS_LOSS:
+                pause();
+                break;
+            case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
+
+                break;
+            case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
+
+                break;
+        }
+    };
 
     @Override
     public void start(int position) {
@@ -152,6 +188,7 @@ public class MusicService extends Service implements MusicInterface, MusicCallba
 
         onPlayState(MusicUtils.PlayState.PLAY);
         onMusicCurrentInfo(mList.get(position));
+        onPosition(position);
         onTotalTime(mMediaPlayer.getDuration());
     }
 
@@ -191,8 +228,21 @@ public class MusicService extends Service implements MusicInterface, MusicCallba
     }
 
     @Override
+    public int getPosition() {
+        return mPosition;
+    }
+
+    @Override
+    public boolean isPlaying() {
+        return mPlayState == MusicUtils.PlayState.PLAY;
+    }
+
+    @Override
     public void onPlayState(int state) {
         mPlayState = state;
+        if (state == MusicUtils.PlayState.PLAY) {
+            requestAudioFocus();
+        }
         getActivity().onPlayState(state);
     }
 
@@ -204,6 +254,11 @@ public class MusicService extends Service implements MusicInterface, MusicCallba
     @Override
     public void onTotalTime(int time) {
         getActivity().onTotalTime(time);
+    }
+
+    @Override
+    public void onPosition(int position) {
+        getActivity().onPosition(position);
     }
 
     @Override

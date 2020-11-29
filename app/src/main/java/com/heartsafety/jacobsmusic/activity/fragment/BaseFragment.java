@@ -47,4 +47,14 @@ public abstract class BaseFragment extends Fragment implements MusicInterface, M
     public void seekTo(int ms) {
         mActivity.seekTo(ms);
     }
+
+    @Override
+    public int getPosition() {
+        return mActivity.getPosition();
+    }
+
+    @Override
+    public boolean isPlaying() {
+        return mActivity.isPlaying();
+    }
 }

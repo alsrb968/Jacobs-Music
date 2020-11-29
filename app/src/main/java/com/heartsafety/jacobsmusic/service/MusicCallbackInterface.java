@@ -8,6 +8,7 @@ public interface MusicCallbackInterface {
     void onPlayState(int state);
     void onPlayTime(int time);
     void onTotalTime(int time);
+    void onPosition(int position);
     void onMusicListInfo(ArrayList<MusicDto> list);
     void onMusicCurrentInfo(MusicDto info);
 }

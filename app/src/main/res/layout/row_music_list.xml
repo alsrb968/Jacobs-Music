@@ -2,13 +2,18 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
+        <import type="android.view.View"/>
+
+        <variable
+            name="playing"
+            type="Boolean" />
 
     </data>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
+        android:gravity="center_vertical"
         android:padding="10dp"
         android:orientation="horizontal">
 
@@ -16,14 +21,16 @@
             android:id="@+id/album"
             android:layout_width="60dp"
             android:layout_height="60dp"
+            android:layout_marginStart="10dp"
             android:scaleType="fitXY" />
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="680px"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_gravity="center"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:duplicateParentState="true">
 
             <TextView
                 android:id="@+id/title"
@@ -33,9 +40,10 @@
                 android:ellipsize="end"
                 android:includeFontPadding="false"
                 android:text="title"
-                android:textSize="26sp"
+                android:textSize="20sp"
                 android:textColor="@color/selector_color"
-                android:fontFamily="@font/notosanskr_regular" />
+                android:fontFamily="@font/notosanskr_regular"
+                android:duplicateParentState="true" />
 
             <TextView
                 android:id="@+id/artist"
@@ -45,9 +53,20 @@
                 android:ellipsize="end"
                 android:includeFontPadding="false"
                 android:text="artist"
-                android:textSize="20sp"
+                android:textSize="13sp"
                 android:textColor="@color/selector_color"
-                android:fontFamily="@font/notosanskr_light" />
+                android:fontFamily="@font/notosanskr_light"
+                android:duplicateParentState="true" />
         </LinearLayout>
+
+        <ImageView
+            android:id="@+id/eq"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="10dp"
+            android:background="@drawable/me_ic_listeq"
+            android:visibility="@{playing ? View.VISIBLE : View.GONE}"/>
+
     </LinearLayout>
+
 </layout>

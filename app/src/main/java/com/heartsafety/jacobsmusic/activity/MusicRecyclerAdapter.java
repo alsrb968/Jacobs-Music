@@ -1,12 +1,11 @@
 package com.heartsafety.jacobsmusic.activity;
 
 import android.content.Context;
-import android.content.Intent;
 import android.databinding.DataBindingUtil;
+import android.graphics.drawable.AnimationDrawable;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import com.bumptech.glide.Glide;
@@ -24,6 +23,8 @@ public class MusicRecyclerAdapter extends RecyclerView.Adapter<MusicRecyclerAdap
     private LayoutInflater mInflater;
 
     private ArrayList<MusicDto> mDataSet;
+
+    private int mCurrentPosition = -1;
 
     public static class MusicViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
@@ -65,10 +66,24 @@ public class MusicRecyclerAdapter extends RecyclerView.Adapter<MusicRecyclerAdap
             ((MusicActivity) mContext).switchFragment(MusicUtils.Page.PLAYER, holder.getAdapterPosition());
         });
 
+        int currPosition = ((MusicActivity) mContext).getPosition();
+        boolean isPlaying = ((MusicActivity) mContext).isPlaying();
+        holder.binding.getRoot().setSelected(position == currPosition);
+        holder.binding.setPlaying(position == currPosition && isPlaying);
+        if (position == currPosition) {
+            AnimationDrawable animationDrawable = (AnimationDrawable) holder.binding.eq.getBackground();
+            animationDrawable.start();
+        }
     }
 
     @Override
     public int getItemCount() {
         return mDataSet.size();
+    }
+
+    public void setSelectedPosition(int position) {
+        Log.d("position: " + position);
+        mCurrentPosition = position;
+        notifyDataSetChanged();
     }
 }
