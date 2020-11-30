@@ -64,9 +64,7 @@ public class MusicService extends Service implements MusicInterface, MusicCallba
         mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 
         mMediaPlayer = new MediaPlayer();
-        mMediaPlayer.setOnCompletionListener(mp -> {
-            next();
-        });
+        mMediaPlayer.setOnCompletionListener(mp -> next());
 
         mProgressUpdate = new ProgressUpdate();
         mProgressUpdate.start();
