@@ -14,9 +14,10 @@ import android.os.IBinder;
 import android.provider.MediaStore;
 
 import com.heartsafety.jacobsmusic.activity.MusicActivity;
-import com.heartsafety.jacobsmusic.activity.model.MusicDto;
+import com.heartsafety.jacobsmusic.activity.model.MusicInfo;
 import com.heartsafety.jacobsmusic.util.Log;
 import com.heartsafety.jacobsmusic.util.MusicUtils;
+import com.heartsafety.jacobsmusic.util.PreferenceManager;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -27,7 +28,7 @@ public class MusicService extends Service implements MusicInterface, MusicCallba
     private MusicActivity mActivity;
     private final IBinder mBinder = new MusicBinder();
 
-    public static ArrayList<MusicDto> mList;
+    public static ArrayList<MusicInfo> mList;
 
     private AudioManager mAudioManager;
     private MediaPlayer mMediaPlayer;
@@ -69,6 +70,8 @@ public class MusicService extends Service implements MusicInterface, MusicCallba
 
         mProgressUpdate = new ProgressUpdate();
         mProgressUpdate.start();
+
+        mPosition = PreferenceManager.getInt(this, MusicUtils.Pref.POSITION);
     }
 
     @Override
@@ -95,19 +98,18 @@ public class MusicService extends Service implements MusicInterface, MusicCallba
                 MediaStore.Audio.Media.ALBUM_ID,
                 MediaStore.Audio.Media.TITLE,
                 MediaStore.Audio.Media.ARTIST,
+                MediaStore.Audio.Media.ALBUM,
+                MediaStore.Audio.Media.DURATION
         };
 
         Cursor cursor = getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
                 projection, null, null, orderBy(MediaStore.Audio.Media.TITLE));
 
+        if (cursor == null) return;
         while (cursor.moveToNext()) {
-            MusicDto musicDto = new MusicDto();
-            musicDto.setId(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media._ID)));
-            musicDto.setAlbumId(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID)));
-            musicDto.setTitle(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE)));
-            musicDto.setArtist(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST)));
+            MusicInfo musicInfo = new MusicInfo(cursor);
 //            Log.d(musicDto.toString());
-            mList.add(musicDto);
+            mList.add(musicInfo);
         }
         cursor.close();
     }
@@ -163,10 +165,8 @@ public class MusicService extends Service implements MusicInterface, MusicCallba
                 pause();
                 break;
             case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
-
                 break;
             case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
-
                 break;
         }
     };
@@ -189,7 +189,6 @@ public class MusicService extends Service implements MusicInterface, MusicCallba
         onPlayState(MusicUtils.PlayState.PLAY);
         onMusicCurrentInfo(mList.get(position));
         onPosition(position);
-        onTotalTime(mMediaPlayer.getDuration());
     }
 
     @Override
@@ -234,6 +233,9 @@ public class MusicService extends Service implements MusicInterface, MusicCallba
 
     @Override
     public boolean isPlaying() {
+        if (mMediaPlayer != null) {
+            mPlayState = mMediaPlayer.isPlaying() ? MusicUtils.PlayState.PLAY : MusicUtils.PlayState.PAUSE;
+        }
         return mPlayState == MusicUtils.PlayState.PLAY;
     }
 
@@ -244,31 +246,35 @@ public class MusicService extends Service implements MusicInterface, MusicCallba
             requestAudioFocus();
         }
         getActivity().onPlayState(state);
+        PreferenceManager.setInt(this, MusicUtils.Pref.PLAY_STATE, state);
     }
 
     @Override
     public void onPlayTime(int time) {
         getActivity().onPlayTime(time);
-    }
-
-    @Override
-    public void onTotalTime(int time) {
-        getActivity().onTotalTime(time);
+        PreferenceManager.setInt(this, MusicUtils.Pref.PLAY_TIME, time);
     }
 
     @Override
     public void onPosition(int position) {
+        Log.d(String.valueOf(position));
         getActivity().onPosition(position);
+        PreferenceManager.setInt(this, MusicUtils.Pref.POSITION, position);
     }
 
     @Override
-    public void onMusicListInfo(ArrayList<MusicDto> list) {
+    public void onMusicListInfo(ArrayList<MusicInfo> list) {
         getActivity().onMusicListInfo(list);
     }
 
     @Override
-    public void onMusicCurrentInfo(MusicDto info) {
+    public void onMusicCurrentInfo(MusicInfo info) {
         getActivity().onMusicCurrentInfo(info);
+        PreferenceManager.setString(this, MusicUtils.Pref.ID, info.getId());
+        PreferenceManager.setString(this, MusicUtils.Pref.ALBUM_ID, info.getAlbumId());
+        PreferenceManager.setString(this, MusicUtils.Pref.TITLE, info.getTitle());
+        PreferenceManager.setString(this, MusicUtils.Pref.ARTIST, info.getArtist());
+        PreferenceManager.setString(this, MusicUtils.Pref.ALBUM, info.getAlbum());
+        PreferenceManager.setInt(this, MusicUtils.Pref.TOTAL_TIME, info.getDuration());
     }
-
 }

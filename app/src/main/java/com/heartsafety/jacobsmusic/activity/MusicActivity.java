@@ -18,21 +18,20 @@ import com.heartsafety.jacobsmusic.R;
 import com.heartsafety.jacobsmusic.activity.fragment.BaseFragment;
 import com.heartsafety.jacobsmusic.activity.fragment.ListFragment;
 import com.heartsafety.jacobsmusic.activity.fragment.PlayerFragment;
-import com.heartsafety.jacobsmusic.activity.model.MusicDto;
+import com.heartsafety.jacobsmusic.activity.model.MusicInfo;
 import com.heartsafety.jacobsmusic.databinding.ActivityMusicBinding;
 import com.heartsafety.jacobsmusic.service.MusicCallbackInterface;
 import com.heartsafety.jacobsmusic.service.MusicInterface;
 import com.heartsafety.jacobsmusic.service.MusicService;
 import com.heartsafety.jacobsmusic.util.Log;
 import com.heartsafety.jacobsmusic.util.MusicUtils;
+import com.heartsafety.jacobsmusic.util.PreferenceManager;
 
 import java.util.ArrayList;
 
 public class MusicActivity extends AppCompatActivity implements MusicInterface, MusicCallbackInterface {
     private ActivityMusicBinding mBinding;
-    private ArrayList<MusicDto> mList;
-    private MusicDto mMusicDto;
-    private int mTotalTime;
+    private ArrayList<MusicInfo> mList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,9 +39,6 @@ public class MusicActivity extends AppCompatActivity implements MusicInterface, 
         checkPermission();
         bindService(new Intent(this, MusicService.class), mServiceConnection, Context.BIND_AUTO_CREATE);
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_music);
-
-        switchFragment(MusicUtils.Page.LIST, 0);
-
     }
 
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
@@ -68,8 +64,24 @@ public class MusicActivity extends AppCompatActivity implements MusicInterface, 
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        Log.i("");
+        int position = PreferenceManager.getInt(MusicActivity.this, MusicUtils.Pref.POSITION);
+        if (position < 0) position = 0;
+        switchFragment(isPlaying() ? MusicUtils.Page.PLAYER : MusicUtils.Page.LIST, position);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.i("");
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
+        Log.i("");
         if (mService != null) {
             unbindService(mServiceConnection);
         }
@@ -144,16 +156,8 @@ public class MusicActivity extends AppCompatActivity implements MusicInterface, 
         }
     }
 
-    public ArrayList<MusicDto> getMusicListInfo() {
+    public ArrayList<MusicInfo> getMusicListInfo() {
         return mList;
-    }
-
-    public MusicDto getMusicCurrentInfo() {
-        return mMusicDto;
-    }
-
-    public int getTotalTime() {
-        return mTotalTime;
     }
 
     @Override
@@ -193,39 +197,40 @@ public class MusicActivity extends AppCompatActivity implements MusicInterface, 
 
     @Override
     public boolean isPlaying() {
-        return getService().isPlaying();
+        if (mService == null) {
+            return false;
+        }
+        return mService.isPlaying();
     }
 
     @Override
     public void onPlayState(int state) {
-        mFragment.onPlayState(state);
+        if (mFragment != null)
+            mFragment.onPlayState(state);
     }
 
     @Override
     public void onPlayTime(int time) {
-        mFragment.onPlayTime(time);
-    }
-
-    @Override
-    public void onTotalTime(int time) {
-        mTotalTime = time;
-        mFragment.onTotalTime(time);
+        if (mFragment != null)
+            mFragment.onPlayTime(time);
     }
 
     @Override
     public void onPosition(int position) {
-        mFragment.onPosition(position);
+        if (mFragment != null)
+            mFragment.onPosition(position);
     }
 
     @Override
-    public void onMusicListInfo(ArrayList<MusicDto> list) {
+    public void onMusicListInfo(ArrayList<MusicInfo> list) {
         mList = list;
-        mFragment.onMusicListInfo(list);
+        if (mFragment != null)
+            mFragment.onMusicListInfo(list);
     }
 
     @Override
-    public void onMusicCurrentInfo(MusicDto info) {
-        mMusicDto = info;
-        mFragment.onMusicCurrentInfo(info);
+    public void onMusicCurrentInfo(MusicInfo info) {
+        if (mFragment != null)
+            mFragment.onMusicCurrentInfo(info);
     }
 }

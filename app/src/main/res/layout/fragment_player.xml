@@ -23,12 +23,8 @@
             type="Integer" />
 
         <variable
-            name="totalTime"
-            type="Integer" />
-
-        <variable
-            name="musicDto"
-            type="com.heartsafety.jacobsmusic.activity.model.MusicDto" />
+            name="musicInfo"
+            type="com.heartsafety.jacobsmusic.activity.model.MusicInfo" />
 
     </data>
 
@@ -99,7 +95,7 @@
                 android:gravity="center"
                 android:singleLine="true"
                 android:includeFontPadding="false"
-                android:text="@{musicDto.title}"
+                android:text="@{musicInfo.title}"
                 android:textColor="@color/ash"
                 android:textSize="30sp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -114,7 +110,7 @@
                 android:gravity="center"
                 android:singleLine="true"
                 android:includeFontPadding="false"
-                android:text="@{musicDto.artist}"
+                android:text="@{musicInfo.artist}"
                 android:textColor="@color/ash"
                 android:textSize="20sp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -192,7 +188,7 @@
                 android:gravity="start"
                 android:includeFontPadding="false"
                 android:singleLine="true"
-                android:text="@{MusicUtils.getTimeString(totalTime)}"
+                android:text="@{MusicUtils.getTimeString(musicInfo.duration)}"
                 android:textColor="@color/ash"
                 android:textSize="15sp"
                 android:layout_marginEnd="10dp"
@@ -207,7 +203,7 @@
                 android:layout_marginHorizontal="20dp"
                 android:progressDrawable="@drawable/seekbar_progress"
                 android:setOnSeekBarChangeListener="@{onSeekBarHandler}"
-                android:max="@{totalTime}"
+                android:max="@{musicInfo.duration}"
                 android:progress="@{playTime}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

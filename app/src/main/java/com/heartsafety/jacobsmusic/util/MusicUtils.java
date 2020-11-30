@@ -22,6 +22,18 @@ public class MusicUtils {
         public static final int PAUSE = 1;
     }
 
+    public static class Pref {
+        public static final String ID = "id";
+        public static final String ALBUM_ID = "album_id";
+        public static final String TITLE = "title";
+        public static final String ARTIST = "artist";
+        public static final String ALBUM = "album";
+        public static final String POSITION = "position";
+        public static final String PLAY_STATE = "play_state";
+        public static final String PLAY_TIME = "play_time";
+        public static final String TOTAL_TIME = "total_time";
+    }
+
     public static Bitmap getAlbumImage(Context context, String album_id) {
         BitmapFactory.Options options = new BitmapFactory.Options();
         // NOTE: There is in fact a 1 pixel frame in the ImageView used to

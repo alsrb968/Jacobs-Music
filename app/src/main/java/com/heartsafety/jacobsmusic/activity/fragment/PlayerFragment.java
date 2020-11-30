@@ -19,10 +19,11 @@ import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.heartsafety.jacobsmusic.R;
-import com.heartsafety.jacobsmusic.activity.model.MusicDto;
+import com.heartsafety.jacobsmusic.activity.model.MusicInfo;
 import com.heartsafety.jacobsmusic.databinding.FragmentPlayerBinding;
 import com.heartsafety.jacobsmusic.util.Log;
 import com.heartsafety.jacobsmusic.util.MusicUtils;
+import com.heartsafety.jacobsmusic.util.PreferenceManager;
 
 import java.util.ArrayList;
 
@@ -69,10 +70,14 @@ public class PlayerFragment extends BaseFragment {
         mBinding.setOnClickHandler(new OnClickHandler());
         mBinding.setOnSeekBarHandler(new OnSeekBarHandler());
 
-        int position = mActivity.getPosition();
+        int position = PreferenceManager.getInt(mActivity, MusicUtils.Pref.POSITION);
         if (position == mPosition) {
-            onMusicCurrentInfo(mActivity.getMusicCurrentInfo());
-            onTotalTime(mActivity.getTotalTime());
+            onMusicCurrentInfo(getMusicInfo());
+            int playTime = PreferenceManager.getInt(mActivity, MusicUtils.Pref.PLAY_TIME);
+            if (playTime > 0 && !isPlaying()) {
+                start(mPosition);
+                seekTo(playTime);
+            }
         } else {
             start(mPosition);
         }
@@ -152,47 +157,45 @@ public class PlayerFragment extends BaseFragment {
     }
 
     @Override
-    public void onTotalTime(int time) {
-        mBinding.setTotalTime(time);
-    }
-
-    @Override
     public void onPosition(int position) {
 
     }
 
     @Override
-    public void onMusicListInfo(ArrayList<MusicDto> list) {
+    public void onMusicListInfo(ArrayList<MusicInfo> list) {
 
     }
 
     @Override
-    public void onMusicCurrentInfo(MusicDto info) {
-        Log.i("");
-        mBinding.setMusicDto(info);
+    public void onMusicCurrentInfo(MusicInfo info) {
+        Log.i(info.toString());
+        mBinding.setMusicInfo(info);
 
         new Handler().postDelayed(() -> mBinding.title.setSelected(true), 1000);
 
-        Bitmap bitmap = MusicUtils.getAlbumImage(mActivity, info.getAlbumId());
-        Glide.with(this)
-                .load(bitmap)
-                .placeholder(R.drawable.me_bg_default_nor)
-                .apply(RequestOptions.bitmapTransform(new RoundedCorners(30)))
-                .into(mBinding.album);
-        Glide.with(this)
-                .load(bitmap)
-                .apply(RequestOptions.bitmapTransform(new BlurTransformation(25, 2)))
-                .into(new CustomTarget<Drawable>() {
-                    @Override
-                    public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
-                        resource.setAlpha(80);
-                        mBinding.bgImage.setBackground(resource);
-                    }
+        String albumId = info.getAlbumId();
+        if (albumId != null && albumId.length() > 0) {
+            Bitmap bitmap = MusicUtils.getAlbumImage(mActivity, info.getAlbumId());
+            Glide.with(this)
+                    .load(bitmap)
+                    .placeholder(R.drawable.me_bg_default_nor)
+                    .apply(RequestOptions.bitmapTransform(new RoundedCorners(30)))
+                    .into(mBinding.album);
+            Glide.with(this)
+                    .load(bitmap)
+                    .apply(RequestOptions.bitmapTransform(new BlurTransformation(25, 2)))
+                    .into(new CustomTarget<Drawable>() {
+                        @Override
+                        public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+                            resource.setAlpha(80);
+                            mBinding.bgImage.setBackground(resource);
+                        }
 
-                    @Override
-                    public void onLoadCleared(@Nullable Drawable placeholder) {
-                        mBinding.bgImage.setBackground(mActivity.getDrawable(R.drawable.co_bg));
-                    }
-                });
+                        @Override
+                        public void onLoadCleared(@Nullable Drawable placeholder) {
+                            mBinding.bgImage.setBackground(mActivity.getDrawable(R.drawable.co_bg));
+                        }
+                    });
+        }
     }
 }

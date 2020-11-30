@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 
 import com.bumptech.glide.Glide;
 import com.heartsafety.jacobsmusic.R;
-import com.heartsafety.jacobsmusic.activity.model.MusicDto;
+import com.heartsafety.jacobsmusic.activity.model.MusicInfo;
 import com.heartsafety.jacobsmusic.databinding.RowMusicListBinding;
 import com.heartsafety.jacobsmusic.util.Log;
 import com.heartsafety.jacobsmusic.util.MusicUtils;
@@ -22,7 +22,7 @@ public class MusicRecyclerAdapter extends RecyclerView.Adapter<MusicRecyclerAdap
     private Context mContext;
     private LayoutInflater mInflater;
 
-    private ArrayList<MusicDto> mDataSet;
+    private ArrayList<MusicInfo> mDataSet;
 
     private int mCurrentPosition = -1;
 
@@ -36,7 +36,7 @@ public class MusicRecyclerAdapter extends RecyclerView.Adapter<MusicRecyclerAdap
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public MusicRecyclerAdapter(Context context, ArrayList<MusicDto> dataSet) {
+    public MusicRecyclerAdapter(Context context, ArrayList<MusicInfo> dataSet) {
         mContext = context;
         mDataSet = dataSet;
     }
@@ -71,6 +71,7 @@ public class MusicRecyclerAdapter extends RecyclerView.Adapter<MusicRecyclerAdap
         holder.binding.getRoot().setSelected(position == currPosition);
         holder.binding.setPlaying(position == currPosition && isPlaying);
         if (position == currPosition) {
+            Log.d("selected: " + position);
             AnimationDrawable animationDrawable = (AnimationDrawable) holder.binding.eq.getBackground();
             animationDrawable.start();
         }
