@@ -126,7 +126,7 @@ public class PlayerFragment extends BaseFragment {
         @Override
         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
             if (seekBar.equals(mBinding.seekbar)) {
-                mBinding.playTime.setText(MusicUtils.getTimeString(progress));
+                mBinding.setPlayTime(progress);
             }
         }
 

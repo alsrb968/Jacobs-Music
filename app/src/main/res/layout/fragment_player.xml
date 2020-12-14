@@ -167,7 +167,6 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/play_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/notosanskr_light"
