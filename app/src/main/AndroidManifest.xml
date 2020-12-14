@@ -13,7 +13,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.JacobsMusic">
         <activity android:name=".activity.RemoteActivity"></activity>
-        <activity android:name=".activity.MusicActivity">
+        <activity android:name=".activity.MusicActivity"
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

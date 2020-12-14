@@ -230,6 +230,7 @@ public class MusicService extends Service implements MusicInterface, MusicCallba
 
     @Override
     public void pause() {
+        if (mMediaPlayer == null) return;
         mMediaPlayer.pause();
         onPlayState(MusicUtils.PlayState.PAUSE);
     }
