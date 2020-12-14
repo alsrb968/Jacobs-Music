@@ -2,7 +2,6 @@ package com.heartsafety.jacobsmusic.activity.fragment;
 
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -10,7 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.heartsafety.jacobsmusic.R;
-import com.heartsafety.jacobsmusic.activity.MusicRecyclerAdapter;
+import com.heartsafety.jacobsmusic.activity.adapter.KeywordAdapter;
+import com.heartsafety.jacobsmusic.activity.adapter.MusicRecyclerAdapter;
 import com.heartsafety.jacobsmusic.activity.model.MusicInfo;
 import com.heartsafety.jacobsmusic.databinding.FragmentListBinding;
 import com.heartsafety.jacobsmusic.util.Log;
@@ -29,6 +29,7 @@ public class ListFragment extends BaseFragment {
     private ArrayList<MusicInfo> mList;
 
     private MusicRecyclerAdapter mMusicAdapter;
+    private KeywordAdapter mKeywordAdapter;
     private int mPosition;
 
     public ListFragment() {
@@ -94,6 +95,10 @@ public class ListFragment extends BaseFragment {
         mActivity.moveTaskToBack(true);
     }
 
+    private final KeywordAdapter.OnKeywordEvent mOnKeywordEvent = position -> {
+        mBinding.recyclerView.scrollToPosition(position);
+    };
+
     @Override
     public void onPlayState(int state) {
 
@@ -117,6 +122,14 @@ public class ListFragment extends BaseFragment {
         mMusicAdapter = new MusicRecyclerAdapter(getContext(), mList);
         mBinding.recyclerView.setAdapter(mMusicAdapter);
         onPosition(mPosition);
+
+        ArrayList<String> keywords = new ArrayList<>();
+        for (MusicInfo info : list) {
+            keywords.add(info.getTitle());
+        }
+
+        mKeywordAdapter = new KeywordAdapter(getContext(), keywords, mOnKeywordEvent);
+        mBinding.recyclerViewKeyword.setAdapter(mKeywordAdapter);
     }
 
     @Override

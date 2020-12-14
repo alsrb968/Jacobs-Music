@@ -1,4 +1,4 @@
-package com.heartsafety.jacobsmusic.activity;
+package com.heartsafety.jacobsmusic.activity.adapter;
 
 import android.content.Context;
 import android.databinding.DataBindingUtil;
@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 
 import com.bumptech.glide.Glide;
 import com.heartsafety.jacobsmusic.R;
+import com.heartsafety.jacobsmusic.activity.MusicActivity;
 import com.heartsafety.jacobsmusic.activity.model.MusicInfo;
 import com.heartsafety.jacobsmusic.databinding.RowMusicListBinding;
 import com.heartsafety.jacobsmusic.util.Log;
