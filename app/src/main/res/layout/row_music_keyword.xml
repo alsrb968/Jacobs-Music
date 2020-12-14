@@ -18,7 +18,7 @@
         <TextView
             android:id="@+id/tvKeyWord"
             android:layout_width="match_parent"
-            android:layout_height="30dp"
+            android:layout_height="35dp"
             android:singleLine="true"
             android:includeFontPadding="false"
             android:gravity="center"

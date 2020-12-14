@@ -80,6 +80,14 @@ public class ListFragment extends BaseFragment {
             mList = list;
 
             onPosition(mPosition);
+
+            ArrayList<String> keywords = new ArrayList<>();
+            for (MusicInfo info : list) {
+                keywords.add(info.getTitle());
+            }
+
+            mKeywordAdapter = new KeywordAdapter(getContext(), keywords, mOnKeywordEvent);
+            mBinding.recyclerViewKeyword.setAdapter(mKeywordAdapter);
         }
 
         mBinding.recyclerView.scrollToPosition(mPosition);
