@@ -3,6 +3,7 @@
     package="com.heartsafety.jacobsmusic">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
         android:allowBackup="true"
@@ -11,7 +12,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.JacobsMusic">
-
+        <activity android:name=".activity.RemoteActivity"></activity>
         <activity android:name=".activity.MusicActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,8 +24,7 @@
         <service
             android:name=".service.MusicService"
             android:enabled="true"
-            android:exported="true"/>
-
+            android:exported="true" />
     </application>
 
 </manifest>

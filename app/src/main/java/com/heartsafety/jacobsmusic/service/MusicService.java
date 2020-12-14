@@ -1,5 +1,8 @@
 package com.heartsafety.jacobsmusic.service;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -12,8 +15,12 @@ import android.net.Uri;
 import android.os.Binder;
 import android.os.IBinder;
 import android.provider.MediaStore;
+import android.support.v4.app.NotificationCompat;
+import android.widget.RemoteViews;
 
+import com.heartsafety.jacobsmusic.R;
 import com.heartsafety.jacobsmusic.activity.MusicActivity;
+import com.heartsafety.jacobsmusic.activity.RemoteActivity;
 import com.heartsafety.jacobsmusic.activity.model.MusicInfo;
 import com.heartsafety.jacobsmusic.util.Log;
 import com.heartsafety.jacobsmusic.util.MusicUtils;
@@ -70,6 +77,8 @@ public class MusicService extends Service implements MusicInterface, MusicCallba
         mProgressUpdate.start();
 
         mPosition = PreferenceManager.getInt(this, MusicUtils.Pref.POSITION);
+
+        startForegroundService();
     }
 
     @Override
@@ -86,6 +95,29 @@ public class MusicService extends Service implements MusicInterface, MusicCallba
             mMediaPlayer.release();
             mMediaPlayer = null;
         }
+    }
+
+    private void startForegroundService() {
+        Intent notificationIntent = new Intent(this, RemoteActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+
+        RemoteViews remoteViews = new RemoteViews(getPackageName(), R.layout.activity_remote);
+
+        NotificationCompat.Builder builder;
+        String CHANNEL_ID = "music_service";
+        NotificationChannel channel = new NotificationChannel(CHANNEL_ID,
+                "Music Service Channel",
+                NotificationManager.IMPORTANCE_DEFAULT);
+
+        ((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE))
+                .createNotificationChannel(channel);
+
+        builder = new NotificationCompat.Builder(this, CHANNEL_ID);
+        builder.setSmallIcon(R.mipmap.ic_launcher)
+                .setContent(remoteViews)
+                .setContentIntent(pendingIntent);
+
+        startForeground(1, builder.build());
     }
 
     private void getMusicList() {

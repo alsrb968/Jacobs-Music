@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <import type="android.view.View"/>
+        <import type="com.heartsafety.jacobsmusic.util.MusicUtils"/>
+
+        <variable
+            name="onClickHandler"
+            type="com.heartsafety.jacobsmusic.activity.RemoteActivity.OnClickHandler" />
+
+        <variable
+            name="playState"
+            type="Integer" />
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        tools:context=".activity.RemoteActivity">
+
+        <ImageView
+            android:id="@+id/album"
+            android:layout_width="200px"
+            android:layout_height="200px" />
+
+        <ImageView
+            android:id="@+id/pre"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_margin="10dp"
+            android:onClick="@{onClickHandler}"
+            android:src="@drawable/me_ic_pre" />
+
+        <ImageView
+            android:id="@+id/play"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_margin="10dp"
+            android:onClick="@{onClickHandler}"
+            android:src="@drawable/me_ic_play"
+            android:visibility="@{playState == MusicUtils.PlayState.PLAY ? View.GONE : View.VISIBLE}" />
+
+        <ImageView
+            android:id="@+id/pause"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_margin="10dp"
+            android:onClick="@{onClickHandler}"
+            android:src="@drawable/me_ic_pause"
+            android:visibility="@{playState == MusicUtils.PlayState.PAUSE ? View.GONE : View.VISIBLE}" />
+
+
+        <ImageView
+            android:id="@+id/next"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_margin="10dp"
+            android:onClick="@{onClickHandler}"
+            android:src="@drawable/me_ic_forward" />
+    </LinearLayout>
+</layout>
